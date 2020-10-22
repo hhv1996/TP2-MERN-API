@@ -10,7 +10,7 @@ var configLoader = require('./configLoader');
 const appConfig = configLoader.GetAppConfig();
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var usuariosRouter = require('./routes/usuarios');
 
 var app = express();
 
@@ -21,7 +21,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/usuarios', usuariosRouter);
 
 app.listen(appConfig.port, () => {
   console.log(`listening on port ${appConfig.port}`);

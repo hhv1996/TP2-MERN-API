@@ -1,22 +1,19 @@
-var express = require('express');
-var router = express.Router();
 var MongoClient = require('mongodb').MongoClient;
-var configLoader = require('../configLoader');
-var urlBuilder = require('../infrastructure/url_builder');
+var configLoader = require('../../configLoader');
+var urlBuilder = require('../../infrastructure/url_builder');
 
 const config = configLoader.GetDBConfig();
 
 const dbName = config.dbs['usuarios'];
-const collectionName = config.cols['usuarios'];
-const uri = urlBuilder.buildUrl('usuarios');
+const collectionName = config.cols[dbName];
+const uri = urlBuilder.build(dbName);
 
-router.get('/', async function (req, res, next) {
-  res.send(await GetAllUsers());
-});
-
+/**
+ * Returns an array of users
+ */
 async function GetAllUsers() {
   let client;
-  let docs;
+  let docs = {};
 
   try {
     client = await MongoClient.connect(uri, { useUnifiedTopology: true });
@@ -30,10 +27,17 @@ async function GetAllUsers() {
   } finally {
     if (typeof client !== 'undefined') {
       await client.close();
-
-      return docs;
     }
   }
+  return docs;
 }
 
-module.exports = router;
+/**
+ * Returns a user object that matches the id
+ * @param int {} id
+ */
+async function GetUserById(id) {
+  return { name: 'test', id: id };
+}
+
+module.exports = { GetAllUsers, GetUserById };
