@@ -1,10 +1,10 @@
-# Basic Node API
+# TP2-MERN-API
 
 **How to run:**
 
   1. Install Node.js
-  2. Windows key + R and type **CMD**
-  3. Go to repo (**ex:** cd C:\Users\defaultuser\Documents\git\basic_api)
-  4. Install packages by running **npm install**
+  2. Go to repo (**ex:** cd C:\Users\defaultuser\Documents\git\basic_api)
+  4. Install packages
+  4. Run with **nodemon start**
 
 TODO: Update this later
