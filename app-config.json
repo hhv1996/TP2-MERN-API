@@ -1,0 +1,13 @@
+{
+  "app": {
+    "currentEnv": "local",
+
+    "local": {
+      "port": "9091",
+      "host": "localhost"
+    },
+    "dev": {},
+    "stg": {},
+    "prod": {}
+  }
+}

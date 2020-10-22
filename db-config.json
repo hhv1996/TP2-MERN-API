@@ -1,0 +1,16 @@
+{
+  "db_data": {
+    "baseUri": "mongodb+srv://<user>:<password>@c0.we2na.mongodb.net/<db>?retryWrites=true&w=majority",
+    "cred": {
+      "name": "admin",
+      "pw": "asdasd123"
+    }
+  },
+  "dbs": {
+    "usuarios": "usuarios"
+  },
+
+  "cols": {
+    "usuarios": "usuario"
+  }
+}
