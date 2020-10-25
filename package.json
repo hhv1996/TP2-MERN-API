@@ -2,6 +2,7 @@
   "name": "basic-api",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "start": "node ./bin/www"
   },
@@ -12,6 +13,7 @@
     "express": "~4.16.1",
     "mongodb": "^3.6.2",
     "mongoose": "^5.10.10",
-    "morgan": "~1.9.1"
+    "morgan": "~1.9.1",
+    "nodemon": "^2.0.6"
   }
 }

@@ -1,12 +1,12 @@
-var configLoader = require('../configLoader');
+var configLoader = require('./config-loader');
 
 const config = configLoader.GetDBConfig();
 
-const build = (db) => {
+const build = () => {
   return config.db_data.baseUri
     .replace('<user>', config.db_data.cred.name)
     .replace('<password>', config.db_data.cred.password)
-    .replace('<db>', db);
+    .replace('<db>', '');
 };
 
 module.exports = { build };
