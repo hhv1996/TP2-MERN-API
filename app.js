@@ -16,12 +16,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/api', indexRouter);
+app.use('/', indexRouter);
 app.use('/api/usuarios', usuariosRouter);
 
 global.clientConnection = initClientDbConnection();
-
-global.appRoot = path.resolve(__dirname);
 
 // app.listen(appConfig.port, () => {
 //   console.log(`listening on port ${appConfig.port}`);
