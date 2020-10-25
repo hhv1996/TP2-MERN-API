@@ -23,8 +23,8 @@ global.clientConnection = initClientDbConnection();
 
 global.appRoot = path.resolve(__dirname);
 
-app.listen(appConfig.port, () => {
-  console.log(`listening on port ${appConfig.port}`);
-});
+// app.listen(appConfig.port, () => {
+//   console.log(`listening on port ${appConfig.port}`);
+// });
 
 module.exports = app;
