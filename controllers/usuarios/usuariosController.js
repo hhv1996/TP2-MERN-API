@@ -33,6 +33,16 @@ async function Create(user) {
       const newUser = await new User({
         employeeNbr: user.employeeNbr,
         name: { first: user.name.first, last: user.name.last },
+        adress: {
+          street: user.adress.street,
+          number: user.adress.number,
+          floor: user.adress.floor,
+          apartment: user.adress.aparment,
+        },
+        phone: user.phone,
+        email: user.email,
+        jwt: user.jwt,
+        imagePatch: user.imagePatch,
         isAdmin: false,
         checkIn: user.checkIn,
         checkOut: user.checkOut,
@@ -61,9 +71,19 @@ async function Update(nbr, user) {
       result = await User.updateOne(
         { employeeNbr: nbr },
         {
-          name: { first: user.name.first, last: user.name.last },
           employeeNbr: user.employeeNbr,
-          isAdmin: user.isAdmin,
+          name: { first: user.name.first, last: user.name.last },
+          adress: {
+            street: user.adress.street,
+            number: user.adress.number,
+            floor: user.adress.floor,
+            apartment: user.adress.aparment,
+          },
+          phone: user.phone,
+          email: user.email,
+          jwt: user.jwt,
+          imagePatch: user.imagePatch,
+          isAdmin: false,
           checkIn: user.checkIn,
           checkOut: user.checkOut,
         }

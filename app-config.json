@@ -3,11 +3,9 @@
     "currentEnv": "local",
 
     "local": {
-      "port": "9091",
+      "port": "3000",
       "host": "localhost"
     },
-    "dev": {},
-    "stg": {},
     "prod": {}
   }
 }

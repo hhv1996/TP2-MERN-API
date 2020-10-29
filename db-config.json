@@ -5,12 +5,5 @@
       "name": "admin",
       "password": "asdasd123"
     }
-  },
-  "dbs": {
-    "usuarios": "usuarios"
-  },
-
-  "cols": {
-    "usuarios": "usuario"
   }
 }
