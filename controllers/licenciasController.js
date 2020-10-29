@@ -17,7 +17,7 @@ async function Get() {
  */
 async function GetByNbr(nbr) {
   const Leave = await getDB();
-  return Leave.findOne({ employeeNbr: nbr });
+  return await Leave.findOne({ employeeNbr: nbr });
 }
 
 /**
@@ -29,7 +29,6 @@ async function Create(leave) {
   let result = null;
 
   try {
-    // if (!(await LeaveExists(leave.employeeNbr))) {
     const newLeave = await new Leave({
       employeeNbr: leave.employeeNbr,
       start: leave.start,
@@ -37,7 +36,6 @@ async function Create(leave) {
     }).save();
 
     result = newLeave;
-    // } else throw 'Employee number already registered';
   } catch (err) {
     console.log(err);
   }
@@ -55,15 +53,16 @@ async function Update(nbr, leave) {
   let result = null;
 
   try {
-    // if (IsLeaveValid(nbr, leave.employeeNbr))
-    result = await Leave.updateOne(
-      { employeeNbr: nbr },
-      {
-        employeeNbr: leave.employeeNbr,
-        start: leave.start,
-        end: leave.end,
-      }
-    );
+    if (IsLeaveValid(nbr, leave.employeeNbr))
+      if (await LeaveExists(nbr))
+        result = await Leave.updateOne(
+          { employeeNbr: nbr },
+          {
+            employeeNbr: leave.employeeNbr,
+            start: leave.start,
+            end: leave.end,
+          }
+        );
   } catch (err) {
     console.log(err);
   }
@@ -80,8 +79,9 @@ async function Delete(nbr, leave) {
   let result = null;
 
   try {
-    // if (IsLeaveValid(nbr, leave.employeeNbr))
-    result = await Leave.findOneAndDelete({ employeeNbr: nbr });
+    if (IsLeaveValid(nbr, leave.employeeNbr))
+      if (await LeaveExists(nbr))
+        result = await Leave.deleteOne({ employeeNbr: nbr });
   } catch (err) {
     console.log(err);
   }
@@ -93,18 +93,18 @@ async function Delete(nbr, leave) {
  * Checks for leave existance
  * @param number nbr
  */
-// async function LeaveExists(nbr) {
-//   return (await GetByNbr(nbr)) !== null ? true : false;
-// }
+async function LeaveExists(nbr) {
+  return (await GetByNbr(nbr)) !== null ? true : false;
+}
 
 /**
  * Checks if a Leave is valid by comparing Nbr and employeeNbr
  * @param number a
  * @param number b
  */
-// function IsLeaveValid(a, b) {
-//   return parseInt(a) === parseInt(b);
-// }
+function IsLeaveValid(a, b) {
+  return parseInt(a) === parseInt(b);
+}
 
 async function getDB() {
   return await global.clientConnection.useDb('licencias').model('Leave');

@@ -17,7 +17,7 @@ async function Get() {
  */
 async function GetByNbr(nbr) {
   const User = await getDB();
-  return User.findOne({ employeeNbr: nbr });
+  return await User.findOne({ employeeNbr: nbr });
 }
 
 /**
@@ -68,26 +68,27 @@ async function Update(nbr, user) {
 
   try {
     if (IsUserValid(nbr, user.employeeNbr))
-      result = await User.updateOne(
-        { employeeNbr: nbr },
-        {
-          employeeNbr: user.employeeNbr,
-          name: { first: user.name.first, last: user.name.last },
-          adress: {
-            street: user.adress.street,
-            number: user.adress.number,
-            floor: user.adress.floor,
-            apartment: user.adress.aparment,
-          },
-          phone: user.phone,
-          email: user.email,
-          jwt: user.jwt,
-          imagePatch: user.imagePatch,
-          isAdmin: false,
-          checkIn: user.checkIn,
-          checkOut: user.checkOut,
-        }
-      );
+      if (await UserExists(nbr))
+        result = await User.updateOne(
+          { employeeNbr: nbr },
+          {
+            employeeNbr: user.employeeNbr,
+            name: { first: user.name.first, last: user.name.last },
+            adress: {
+              street: user.adress.street,
+              number: user.adress.number,
+              floor: user.adress.floor,
+              apartment: user.adress.aparment,
+            },
+            phone: user.phone,
+            email: user.email,
+            jwt: user.jwt,
+            imagePatch: user.imagePatch,
+            isAdmin: false,
+            checkIn: user.checkIn,
+            checkOut: user.checkOut,
+          }
+        );
   } catch (err) {
     console.log(err);
   }
@@ -105,7 +106,8 @@ async function Delete(nbr, user) {
 
   try {
     if (IsUserValid(nbr, user.employeeNbr))
-      result = await User.findOneAndDelete({ employeeNbr: nbr });
+      if (await UserExists(nbr))
+        result = await User.deleteOne({ employeeNbr: nbr });
   } catch (err) {
     console.log(err);
   }

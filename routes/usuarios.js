@@ -22,13 +22,13 @@ router.post('/', async (req, res) => {
 router.put('/:nbr', async (req, res) => {
   const result = await users.Update(req.params.nbr, req.body);
   if (result !== null) res.sendStatus(200);
-  else res.sendStatus(404);
+  else res.sendStatus(403);
 });
 
 router.delete('/:nbr', async (req, res) => {
   const result = await users.Delete(req.params.nbr, req.body);
   if (result !== null) res.sendStatus(200);
-  else res.sendStatus(404);
+  else res.sendStatus(403);
 });
 
 module.exports = router;
