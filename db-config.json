@@ -1,7 +1,7 @@
 {
   "db_data": {
     "baseUri": "mongodb+srv://admin:<password>@c0.we2na.mongodb.net/<db>?retryWrites=true&w=majority",
-    "cred": {
+    "creds": {
       "name": "admin",
       "password": "asdasd123"
     }
