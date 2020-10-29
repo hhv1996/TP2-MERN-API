@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const User = require('../../models/usuario');
+const User = require('../models/usuario');
 
 /**
  * Returns an array of Users

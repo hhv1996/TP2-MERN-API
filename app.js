@@ -7,6 +7,7 @@ const appConfig = configLoader.GetAppConfig();
 
 var indexRouter = require('./routes/index');
 var usuariosRouter = require('./routes/usuarios');
+var licenciasRouter = require('./routes/licencias');
 var app = express();
 
 const { initClientDbConnection } = require('./infrastructure/db-util');
@@ -18,6 +19,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/api/usuarios', usuariosRouter);
+app.use('/api/licencias', licenciasRouter);
 
 global.clientConnection = initClientDbConnection();
 
