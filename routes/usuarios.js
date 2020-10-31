@@ -7,26 +7,29 @@ router.get('/', async (req, res) => {
   res.send(await users.Get());
 });
 
-router.get('/:nbr', async (req, res) => {
-  const result = await users.GetByNbr(req.params.nbr);
-  if (result !== null) res.json(result);
-  else res.sendStatus(404);
+router.get('/:param', async (req, res) => {
+  const result = req.params.param.includes('@')
+    ? await users.GetByEmail(req.params.param)
+    : await users.GetById(req.params.param);
+
+  if (result !== null) res.status(200).json(result);
+  else res.sendStatus(403);
 });
 
 router.post('/', async (req, res) => {
   const result = await users.Create(req.body);
-  if (result !== null) res.sendStatus(201);
+  if (result !== null) res.status(201).json(result);
   else res.sendStatus(403);
 });
 
-router.put('/:nbr', async (req, res) => {
-  const result = await users.Update(req.params.nbr, req.body);
-  if (result !== null) res.sendStatus(200);
+router.put('/:id', async (req, res) => {
+  const result = await users.Update(req.params.id, req.body);
+  if (result !== null) res.status(200).json(result);
   else res.sendStatus(403);
 });
 
-router.delete('/:nbr', async (req, res) => {
-  const result = await users.Delete(req.params.nbr, req.body);
+router.delete('/:id', async (req, res) => {
+  const result = await users.Delete(req.params.id, req.body);
   if (result !== null) res.sendStatus(200);
   else res.sendStatus(403);
 });
