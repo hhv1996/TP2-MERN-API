@@ -40,8 +40,7 @@ async function GetByEmail(email) {
   try {
     result = await User.findOne({ email: email });
 
-    if (result === null)
-      throw `>>> Error: user with email "${email}" not found`;
+    if (result === null) throw `>>> User with email "${email}" not found`;
   } catch (err) {
     console.log(err);
   }
