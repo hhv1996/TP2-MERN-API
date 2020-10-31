@@ -12,7 +12,7 @@ function IsObjectId(a, b) {
 }
 
 /**
- * Checks if two variables are stricly equal
+ * Checks if two values are stricly equal
  * @param any a
  * @param any b
  */
