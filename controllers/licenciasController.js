@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const Leave = require('../models/licencia');
+const Users = require('./usuariosController');
+const Util = require('./util/controller-util');
 
 /**
  * Returns an array of Leaves
@@ -12,12 +14,41 @@ async function Get() {
 }
 
 /**
- * Returns a Leave that matches the employeeNbr
- * @param number {} nbr
+ * Returns a Leave that matches the Id
+ * @param string {} Id
  */
-async function GetByNbr(nbr) {
+async function GetById(id) {
   const Leave = await getDB();
-  return await Leave.findOne({ employeeNbr: nbr });
+  let result = null;
+
+  try {
+    if (Util.IsObjectId(id)) result = await Leave.findById(id);
+    else throw `>>> Error: id cannot be casted to ObjectId`;
+  } catch (err) {
+    console.log(err);
+  }
+
+  return result;
+}
+
+/**
+ * Returns an array of Leaves that matches the UserId
+ * @param string {} Id
+ */
+async function GetByUserId(id) {
+  const Leave = await getDB();
+  let result = null;
+
+  try {
+    if (Util.IsObjectId(id))
+      if (Users.UserExists(id)) result = await Leave.find({ userId: id });
+      else throw `>>> Error: user with id "${id}" not found`;
+    else throw `>>> Error: id cannot be casted to ObjectId`;
+  } catch (err) {
+    console.log(err);
+  }
+
+  return result;
 }
 
 /**
@@ -29,13 +60,13 @@ async function Create(leave) {
   let result = null;
 
   try {
-    const newLeave = await new Leave({
-      employeeNbr: leave.employeeNbr,
-      start: leave.start,
-      end: leave.end,
-    }).save();
-
-    result = newLeave;
+    if (await Users.UserExists(leave.userId))
+      result = await new Leave({
+        userId: leave.userId,
+        start: leave.start,
+        end: leave.end,
+      }).save();
+    else throw `>>> Error: user with id "${id}" not found`;
   } catch (err) {
     console.log(err);
   }
@@ -45,24 +76,29 @@ async function Create(leave) {
 
 /**
  * Updates a given Leave
- * @param number nbr
+ * @param string id
  * @param Leave leave
  */
-async function Update(nbr, leave) {
+async function Update(id, leave) {
   const Leave = await getDB();
   let result = null;
 
   try {
-    if (IsLeaveValid(nbr, leave.employeeNbr))
-      if (await LeaveExists(nbr))
-        result = await Leave.updateOne(
-          { employeeNbr: nbr },
-          {
-            employeeNbr: leave.employeeNbr,
-            start: leave.start,
-            end: leave.end,
-          }
-        );
+    if (Util.IsEqual(id, leave._id))
+      if (Util.IsObjectId(id))
+        if (await LeaveExists(id))
+          result = await Leave.findByIdAndUpdate(
+            id,
+            {
+              userId: leave.userId,
+              start: leave.start,
+              end: leave.end,
+            },
+            { useFindAndModify: false }
+          );
+        else throw `>>> Error: leave with id "${id}" not found`;
+      else throw `>>> Error: id cannot be casted to ObjectId`;
+    else throw `>>> Error: mismatching ids`;
   } catch (err) {
     console.log(err);
   }
@@ -71,17 +107,23 @@ async function Update(nbr, leave) {
 }
 /**
  * Deletes a given Leave
- * @param number nbr
+ * @param string id
  * @param Leave leave
  */
-async function Delete(nbr, leave) {
+async function Delete(id, leave) {
   const Leave = await getDB();
   let result = null;
 
   try {
-    if (IsLeaveValid(nbr, leave.employeeNbr))
-      if (await LeaveExists(nbr))
-        result = await Leave.deleteOne({ employeeNbr: nbr });
+    if (Util.IsEqual(id, leave._id))
+      if (Util.IsObjectId(id))
+        if (await LeaveExists(id))
+          result = await Leave.findByIdAndDelete(id, {
+            useFindAndModify: false,
+          });
+        else throw `>>> Error: leave with id "${id}" not found`;
+      else throw `>>> Error: id cannot be casted to ObjectId`;
+    else throw `>>> Error: mismatching ids`;
   } catch (err) {
     console.log(err);
   }
@@ -91,23 +133,14 @@ async function Delete(nbr, leave) {
 
 /**
  * Checks for leave existance
- * @param number nbr
+ * @param string id
  */
-async function LeaveExists(nbr) {
-  return (await GetByNbr(nbr)) !== null ? true : false;
-}
-
-/**
- * Checks if a Leave is valid by comparing Nbr and employeeNbr
- * @param number a
- * @param number b
- */
-function IsLeaveValid(a, b) {
-  return parseInt(a) === parseInt(b);
+async function LeaveExists(id) {
+  return (await GetById(id)) !== null ? true : false;
 }
 
 async function getDB() {
   return await global.clientConnection.useDb('licencias').model('Leave');
 }
 
-module.exports = { Get, GetByNbr, Create, Update, Delete };
+module.exports = { Get, GetById, GetByUserId, Create, Update, Delete };
