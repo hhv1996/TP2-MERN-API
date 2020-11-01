@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const attendanceSchema = new Schema({
-  employeeNbr: Number,
+  userId: String,
   checkIn: Date,
   checkOut: Date,
 });

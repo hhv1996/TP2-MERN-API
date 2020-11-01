@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Attendance = require('../models/asistencia');
-const User = require('../models/usuario');
+const Users = require('./usuariosController');
+const Util = require('./util/controller-util');
 
 /**
  * Returns an array of Attendances
@@ -12,26 +13,39 @@ async function Get() {
 
 /**
  * Returns a Attendance that matches the employeeNbr
- * @param number {} nbr
+ * @param string {} id
  */
 async function GetById(id) {
   const Attendance = await getDB();
   let result = null;
 
   try {
-    result = await Attendance.findById(id);
-  } catch (err) {}
+    if (Util.IsObjectId(id)) result = await Attendance.findById(id);
+    else throw `>>> Error: id cannot be casted to ObjectId`;
+  } catch (err) {
+    console.log(err);
+  }
+
   return result;
 }
 
-async function GetByEmployeeNbr(nbr) {
+/**
+ * Returns a Attendance that matches the UserId
+ * @param string {} id
+ */
+async function GetByUserId(id) {
   const Attendance = await getDB();
   let result = null;
 
   try {
-    if (await EmployeeExists(nbr))
-      result = await Attendance.find({ employeeNbr: nbr });
-  } catch (err) {}
+    if (Util.IsObjectId(id))
+      if (Users.UserExists(id)) result = await Attendance.find({ userId: id });
+      else throw `>>> Error: user with id "${id}" not found`;
+    else throw `>>> Error: id cannot be casted to ObjectId`;
+  } catch (err) {
+    console.log(err);
+  }
+
   return result;
 }
 
@@ -44,15 +58,13 @@ async function Create(attendance) {
   let result = null;
 
   try {
-    if (await EmployeeExists(attendance.employeeNbr)) {
-      const newAttendance = await new Attendance({
-        employeeNbr: attendance.employeeNbr,
+    if (await Users.UserExists(attendance.userId))
+      result = await new Attendance({
+        userId: attendance.userId,
         checkIn: attendance.checkIn,
         checkOut: attendance.checkOut,
       }).save();
-
-      result = newAttendance;
-    }
+    else throw `>>> Error: user with id "${id}" not found`;
   } catch (err) {
     console.log(err);
   }
@@ -62,7 +74,7 @@ async function Create(attendance) {
 
 /**
  * Updates a given Attendance
- * @param number nbr
+ * @param string id
  * @param Attendance attendance
  */
 async function Update(id, attendance) {
@@ -70,15 +82,21 @@ async function Update(id, attendance) {
   let result = null;
 
   try {
-    if (await AttendanceExists(id))
-      result = await Attendance.updateOne(
-        { _id: id },
-        {
-          employeeNbr: attendance.employeeNbr,
-          checkIn: attendance.checkIn,
-          checkOut: attendance.checkOut,
-        }
-      );
+    if (Util.IsEqual(id, attendance._id))
+      if (Util.IsObjectId(id))
+        if (await AttendanceExists(id))
+          result = await Attendance.findByIdAndUpdate(
+            id,
+            {
+              userId: attendance.userId,
+              checkIn: attendance.checkIn,
+              checkOut: attendance.checkOut,
+            },
+            { useFindAndModify: false }
+          );
+        else throw `>>> Error: attendance with id "${id}" not found`;
+      else throw `>>> Error: id cannot be casted to ObjectId`;
+    else throw `>>> Error: mismatching ids`;
   } catch (err) {
     console.log(err);
   }
@@ -90,13 +108,20 @@ async function Update(id, attendance) {
  * @param number nbr
  * @param Attendance attendance
  */
-async function Delete(id) {
+async function Delete(id, attendance) {
   const Attendance = await getDB();
   let result = null;
 
   try {
-    if (await AttendanceExists(id))
-      result = await Attendance.deleteOne({ _id: id });
+    if (Util.IsEqual(id, attendance._id))
+      if (Util.IsObjectId(id))
+        if (await AttendanceExists(id))
+          result = await Attendance.findByIdAndDelete(id, {
+            useFindAndModify: false,
+          });
+        else throw `>>> Error: attendance with id "${id}" not found`;
+      else throw `>>> Error: id cannot be casted to ObjectId`;
+    else throw `>>> Error: mismatching ids`;
   } catch (err) {
     console.log(err);
   }
@@ -106,33 +131,14 @@ async function Delete(id) {
 
 /**
  * Checks for attendance existance
- * @param number nbr
+ * @param id string
  */
 async function AttendanceExists(id) {
   return (await GetById(id)) !== null ? true : false;
-}
-
-/**
- * Checks if a Attendance is valid by comparing Nbr and employeeNbr
- * @param number a
- * @param number b
- */
-
-async function EmployeeExists(nbr) {
-  const User = await getUserDB();
-
-  return User.findOne({ employeeNbr: nbr } !== null) ? true : false;
 }
 
 async function getDB() {
   return await global.clientConnection.useDb('asistencias').model('Attendance');
 }
 
-/**
- * Gets the User DB for validation purposes
- */
-async function getUserDB() {
-  return await global.clientConnection.useDb('usuarios').model('User');
-}
-
-module.exports = { Get, GetById, GetByEmployeeNbr, Create, Update, Delete };
+module.exports = { Get, GetById, GetByUserId, Create, Update, Delete };
