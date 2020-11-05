@@ -56,6 +56,7 @@ async function Create(user) {
   const User = await getDB();
   let result = null;
 
+  // Remove this later
   try {
     if (!(await IsEmailOnUse(user.email))) {
       const newUser = await new User({
