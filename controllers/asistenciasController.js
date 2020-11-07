@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Attendance = require('../models/asistencia');
+const Attendance = require('../entities/asistencia');
 const Users = require('./usuariosController');
 const Util = require('./util/controller-util');
 

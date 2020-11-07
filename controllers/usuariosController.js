@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const User = require('../models/usuario');
+const User = require('../entities/usuario');
 const Util = require('./util/controller-util');
 
 /**
@@ -56,7 +56,6 @@ async function Create(user) {
   const User = await getDB();
   let result = null;
 
-  // Remove this later
   try {
     if (!(await IsEmailOnUse(user.email))) {
       const newUser = await new User({

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Leave = require('../models/licencia');
+const Leave = require('../entities/licencia');
 const Users = require('./usuariosController');
 const Util = require('./util/controller-util');
 

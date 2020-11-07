@@ -9,6 +9,7 @@ var indexRouter = require('./routes/index');
 var usuariosRouter = require('./routes/usuarios');
 var licenciasRouter = require('./routes/licencias');
 var asistenciasRouter = require('./routes/asistencias');
+var institucionesRouter = require('./routes/instituciones');
 var app = express();
 
 const { initClientDbConnection } = require('./infrastructure/db-util');
@@ -22,6 +23,7 @@ app.use('/', indexRouter);
 app.use('/api/usuarios', usuariosRouter);
 app.use('/api/licencias', licenciasRouter);
 app.use('/api/asistencias', asistenciasRouter);
+app.use('/api/instituciones', institucionesRouter);
 
 global.clientConnection = initClientDbConnection();
 
