@@ -1,18 +1,17 @@
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var configLoader = require('./infrastructure/config-loader');
-
-const appConfig = configLoader.GetAppConfig();
-
-var indexRouter = require('./routes/index');
-var usuariosRouter = require('./routes/usuarios');
-var licenciasRouter = require('./routes/licencias');
-var asistenciasRouter = require('./routes/asistencias');
-var institucionesRouter = require('./routes/instituciones');
-var app = express();
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
 
 const { initClientDbConnection } = require('./infrastructure/db-util');
+const QuickResponseManager = require('./modules/qr/QuickResponseManager');
+
+const indexRouter = require('./routes/index');
+const usuariosRouter = require('./routes/usuarios');
+const licenciasRouter = require('./routes/licencias');
+const asistenciasRouter = require('./routes/asistencias');
+const institucionesRouter = require('./routes/instituciones');
+const historicoQRRouter = require('./routes/historicoQR');
+const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -24,8 +23,11 @@ app.use('/api/usuarios', usuariosRouter);
 app.use('/api/licencias', licenciasRouter);
 app.use('/api/asistencias', asistenciasRouter);
 app.use('/api/instituciones', institucionesRouter);
+app.use('/api/historico', historicoQRRouter);
 
 global.clientConnection = initClientDbConnection();
+
+QuickResponseManager.Initialize();
 
 // app.listen(appConfig.port, () => {
 //   console.log(`listening on port ${appConfig.port}`);

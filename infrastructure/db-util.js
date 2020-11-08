@@ -10,7 +10,6 @@ const initClientDbConnection = () => {
   db.on('error', console.error.bind(console, 'MongoDB Connection Error>> : '));
   db.once('open', function () {
     console.log('Connected to mongoDB!');
-    // require('../models/usuario.js');
   });
 
   return db;
