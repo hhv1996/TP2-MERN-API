@@ -29,9 +29,7 @@ async function Validate(token) {
 
   jwt.verify(token, qr.secret, (err) => {
     if (err) console.log(err);
-    else {
-      isValid = !isValid;
-    }
+    else isValid = !isValid;
   });
 
   console.log(`is QR valid? ${isValid}`);
