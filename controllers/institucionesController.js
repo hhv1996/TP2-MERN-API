@@ -48,6 +48,8 @@ async function Create(institution) {
         apartment: institution.adress.apartment,
       },
       logoPatch: institution.logoPatch,
+      latitude: institution.latitude,
+      longitude: institution.longitude,
     }).save();
 
     result = newInstitution;
@@ -82,6 +84,8 @@ async function Update(id, institution) {
                 apartment: institution.adress.apartment,
               },
               logoPatch: institution.logoPatch,
+              latitude: institution.latitude,
+              longitude: institution.longitude,
             },
             { useFindAndModify: false }
           );
