@@ -128,7 +128,23 @@ async function Delete(id, attendance) {
 
   return result;
 }
+async function GetLatestByUserId(id) {
+  const Attendance = await getDB();
+  let result = null;
 
+  try {
+    if (Util.IsObjectId(id))
+      if (Users.UserExists(id)){
+        result = await Attendance.find({ userId: id }).sort ({checkIn:-1}).limit(1);
+      } 
+      else throw `>>> Error: user with id "${id}" not found`;
+    else throw `>>> Error: id cannot be casted to ObjectId`;
+  } catch (err) {
+    console.log(err);
+  }
+
+  return result;
+}
 /**
  * Checks for attendance existance
  * @param id string
@@ -141,4 +157,4 @@ async function getDB() {
   return await global.clientConnection.useDb('asistencias').model('Attendance');
 }
 
-module.exports = { Get, GetById, GetByUserId, Create, Update, Delete };
+module.exports = { Get, GetById, GetByUserId, Create, Update, Delete,GetLatestByUserId };
