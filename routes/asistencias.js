@@ -19,7 +19,7 @@ router.get('/usuario/:id', async (req, res) => {
   else res.sendStatus(403);
 });
 
-router.get('/usuario/ultimaAsistencia/:id', async (req, res) => {
+router.get('/usuario/:id/latest', async (req, res) => {
   const result = await attendances.GetLatestByUserId(req.params.id);
   if (result !== null) res.json(result);
   else res.sendStatus(403);
