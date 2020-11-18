@@ -13,4 +13,10 @@ router.get('/:id', async (req, res) => {
   else res.sendStatus(403);
 });
 
+router.get('/latest', async (req, res) => {
+  const result = await historical.GetLatest();
+  if (result !== null) res.json(result);
+  else res.sendStatus(403);
+});
+
 module.exports = router;
